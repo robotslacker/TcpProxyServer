@@ -1,0 +1,15 @@
+POST http://{{host}}:{{port}}/tcpProxy/createProxy
+Accept: application/json
+Content-Type: application/json
+
+{
+  "proxyName":"HelloWorld",
+  "localPort": 9000,
+  "proxyTargetEndPoint": [
+      {
+        "targetPort": 22,
+        "targetAddress": "192.168.2.4"
+      }
+    ],
+  "workerCount": 3
+}

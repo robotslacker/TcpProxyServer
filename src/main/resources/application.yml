@@ -1,0 +1,50 @@
+app:
+  build:
+    time:  @timestamp@
+  workdir: d:\\Temp
+
+management:
+  health:
+    mail:
+      enabled: false
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+      jmx:
+        enabled: true
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,health,info,tcpproxy
+      base-path: /metrics
+
+spring:
+  application:
+    name:   tcpproxy
+
+# spring boot 端口配置
+server:
+  port: 8080
+  #开启优雅停机，默认IMMEDIATE，立即停机
+  shutdown: graceful
+
+# 日志文件配置
+logging:
+  file:
+    path: ${app.workdir}/log
+
+# swagger开关
+swagger:
+  enable: true
+
+# 线程池
+threadPool:
+  threadNamePrefix: tcpproxy-server-exec-
+  maxPoolSize: 5
+  corePoolSize: 5
+  queueCapacity: 1000
+

@@ -1,0 +1,5 @@
+# JetBrain IDEA
+.idea/
+
+# 项目排除路径
+/target/

@@ -1,0 +1,39 @@
+{
+  "properties": [
+    {
+      "name": "app.build.time",
+      "type": "java.lang.String",
+      "description": "应用程序的编译时间."
+    },
+    {
+      "name": "app.workdir",
+      "type": "java.lang.String",
+      "description": "应用程序的工作目录."
+    },
+    {
+      "name": "swagger.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否打开Swagger控制."
+    },
+    {
+      "name": "threadPool.threadNamePrefix",
+      "type": "java.lang.String",
+      "description": "Description for threadPool.threadNamePrefix."
+    },
+    {
+      "name": "threadPool.maxPoolSize",
+      "type": "java.lang.Integer",
+      "description": "线程池的最大数量."
+    },
+    {
+      "name": "threadPool.corePoolSize",
+      "type": "java.lang.Integer",
+      "description": "线程池的初始化数量."
+    },
+    {
+      "name": "threadPool.queueCapacity",
+      "type": "java.lang.Integer",
+      "description": "线程池的最大队列长度."
+    }
+  ]
+}
