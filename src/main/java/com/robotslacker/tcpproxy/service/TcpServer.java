@@ -1,13 +1,12 @@
 package com.robotslacker.tcpproxy.service;
 
-import com.robotslacker.tcpproxy.service.TcpServerAcceptor;
 import com.robotslacker.tcpproxy.config.TcpServerConfig;
-import com.robotslacker.tcpproxy.service.TcpServerWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Simple TCP server based on NIO.
@@ -27,17 +26,16 @@ import java.util.logging.Logger;
  * After that worker returns to step with queue.
  *
  * @see TcpServerConfig
- * @see TcpServerHandler
+ * @see ITcpServerHandler
  * @see TcpServerHandlerFactory
  */
 public class TcpServer {
 
-    private final static Logger LOGGER = Logger.getAnonymousLogger();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TcpServerConfig config;
-    private final String name;
 
-    private Queue<TcpServerHandler> handlers;
+    private Queue<ITcpServerHandler> handlers;
     private Thread[] workers;
 
     /**
@@ -49,7 +47,6 @@ public class TcpServer {
             throw new NullPointerException("Please specify config! Thx!");
 
         this.config = config;
-        name = "TcpServer on port " + config.getPort();
     }
 
     /**
@@ -61,9 +58,6 @@ public class TcpServer {
     public void start() {
         if (workers != null) throw new UnsupportedOperationException("Please shutdown connector!");
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("Starting " + name + " with " + config.getWorkerCount() + " workers");
-
         handlers = new ConcurrentLinkedQueue<>();
         handlers.add(new TcpServerAcceptor(config, handlers));
 
@@ -74,8 +68,7 @@ public class TcpServer {
 
         for (final Thread worker : workers) worker.start();
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info(name + " started");
+        logger.info("TCP服务器已经启动在端口【{}】，共包含工作线程【{}】个.", config.getPort(), config.getWorkerCount());
     }
 
     /**
@@ -87,14 +80,11 @@ public class TcpServer {
      */
     public void shutdown() {
         if (workers == null) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info(name + " already been shutdown");
+            logger.info("TCP服务器已经启动在端口【{}】已经被关闭.", config.getPort());
             return;
         }
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("Starting shutdown " + name);
-
+        logger.info("准备关闭在端口【{}】上的TCP服务器...", config.getPort());
         for (final Thread worker : workers) {
             worker.interrupt();
             try {
@@ -103,14 +93,10 @@ public class TcpServer {
                 Thread.currentThread().interrupt();
             }
         }
-        workers = null;
-
-        TcpServerHandler handler;
+        ITcpServerHandler handler;
         while ((handler = handlers.poll()) != null) handler.destroy();
         handlers = null;
-
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info(name + " was shutdown");
+        logger.info("在端口【{}】上的TCP服务器已经被关闭.", config.getPort());
+        workers = null;
     }
-
 }

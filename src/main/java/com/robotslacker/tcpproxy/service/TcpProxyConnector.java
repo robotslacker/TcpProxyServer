@@ -1,35 +1,20 @@
-/*
-Copyright 2012 Artem Stasuk
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
-
 package com.robotslacker.tcpproxy.service;
 
 import com.robotslacker.tcpproxy.model.ProxyTargetEndPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-class TcpProxyConnector implements TcpServerHandler {
+class TcpProxyConnector implements ITcpServerHandler {
 
-    private final static Logger LOGGER = Logger.getAnonymousLogger();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TcpProxyBuffer clientBuffer = new TcpProxyBuffer();
     private final TcpProxyBuffer serverBuffer = new TcpProxyBuffer();
@@ -37,10 +22,16 @@ class TcpProxyConnector implements TcpServerHandler {
 
     private Selector selector;
     private SocketChannel serverChannel;
-    private ITcpProxyService config;
+    private final ITcpProxyService config;
+    private String clientAddress = "";
+    private String serverAddress = "";
 
     public TcpProxyConnector(SocketChannel clientChannel, ITcpProxyService config) {
         this.clientChannel = clientChannel;
+        try {
+            this.clientAddress = clientChannel.getRemoteAddress().toString();
+        }
+        catch (IOException ignored){}
         this.config = config;
     }
 
@@ -76,13 +67,13 @@ class TcpProxyConnector implements TcpServerHandler {
         serverChannel.register(selector, serverOps, this);
     }
 
-    private static void closeQuietly(SocketChannel channel) {
+    private void closeQuietly(SocketChannel channel) {
         if (channel != null) {
             try {
                 channel.close();
             } catch (IOException exception) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, "Could not close channel properly.", exception);
+                logger.error("无法正常关闭隧道【】",
+                    exception);
             }
         }
     }
@@ -92,6 +83,7 @@ class TcpProxyConnector implements TcpServerHandler {
         this.selector = selector;
 
         ProxyTargetEndPoint proxyTargetEndPoint = config.getProxyTargetEndPointList().get(0);
+        this.serverAddress = proxyTargetEndPoint.getTargetAddress() + ":" + proxyTargetEndPoint.getTargetPort();
 
         try {
             clientChannel.configureBlocking(false);
@@ -103,12 +95,21 @@ class TcpProxyConnector implements TcpServerHandler {
             serverChannel.configureBlocking(false);
 
             register();
-        } catch (final IOException exception) {
+            logger.info("成功建立从客户端点【{}】到目标端点【{}】的隧道.",
+                clientChannel.getRemoteAddress(),
+                "/" + proxyTargetEndPoint.getTargetAddress() + ":" + proxyTargetEndPoint.getTargetPort());
+        } catch (ConnectException ce)
+        {
             destroy();
-
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, "Could not connect to "
-                        + proxyTargetEndPoint.getTargetAddress() + ":" + proxyTargetEndPoint.getTargetPort(), exception);
+            logger.info("无法连接到指定的目标端点【{}:{}】",
+                proxyTargetEndPoint.getTargetAddress(), proxyTargetEndPoint.getTargetPort());
+        }
+        catch (final IOException exception) {
+            destroy();
+            logger.error("无法连接到指定的目标端点【{}:{}】",
+                proxyTargetEndPoint.getTargetAddress(),
+                proxyTargetEndPoint.getTargetPort(),
+                exception);
         }
     }
 
@@ -116,25 +117,39 @@ class TcpProxyConnector implements TcpServerHandler {
     public void process(final SelectionKey key) {
         try {
             if (key.channel() == clientChannel) {
-                if (key.isValid() && key.isReadable()) readFromClient();
-                if (key.isValid() && key.isWritable()) writeToClient();
-            }
-
-            if (key.channel() == serverChannel) {
-                if (key.isValid() && key.isReadable()) readFromServer();
-                if (key.isValid() && key.isWritable()) writeToServer();
+                if (key.isValid() && key.isReadable()) {
+                    readFromClient();
+                }
+                if (key.isValid() && key.isWritable()) {
+                    writeToClient();
+                }
             }
         } catch (final ClosedChannelException exception) {
             destroy();
-
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, "Channel was closed by client or server.", exception);
+            logger.error("Channel was closed by client or server.", exception);
         } catch (final IOException exception) {
             destroy();
-
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, "Could not process.", exception);
+            logger.info("来自于客户端【{}】的连接已经中断.", clientAddress);
         }
+
+
+        try {
+            if (key.channel() == serverChannel) {
+                if (key.isValid() && key.isReadable()) {
+                    readFromServer();
+                }
+                if (key.isValid() && key.isWritable()) {
+                    writeToServer();
+                }
+            }
+        } catch (final ClosedChannelException exception) {
+            destroy();
+            logger.error("Channel was closed by client or server.", exception);
+        } catch (final IOException exception) {
+            destroy();
+            logger.info("来自于服务端【{}】的连接已经中断.", serverAddress);
+        }
+
     }
 
     @Override
@@ -142,5 +157,4 @@ class TcpProxyConnector implements TcpServerHandler {
         closeQuietly(clientChannel);
         closeQuietly(serverChannel);
     }
-
 }

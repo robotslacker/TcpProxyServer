@@ -21,6 +21,7 @@ public class TcpProxyServerController {
      * 系统标准日志
      */
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static  TcpProxy tcpProxy;
 
     @Resource
     private ApplicationContext context;
@@ -32,6 +33,7 @@ public class TcpProxyServerController {
     @Async("asyncTaskExecutor")
     public void shutdown() {
         logger.info("系统即将停止服务,.....");
+        tcpProxy.shutdown();
         SpringApplication.exit(context, () -> 0);
         logger.info("当前服务已经停止.");
         System.exit(0);
@@ -41,6 +43,7 @@ public class TcpProxyServerController {
     @Async("asyncTaskExecutor")
     public void restart() {
         logger.info("系统即将重新启动,.....");
+        tcpProxy.shutdown();
         TcpProxyServerApplication.restart();
         logger.info("当前服务已经启动.");
     }
@@ -53,6 +56,7 @@ public class TcpProxyServerController {
                 createProxyRequest.getProxyTargetEndPoint().get(0).getTargetAddress(),
                 createProxyRequest.getProxyTargetEndPoint().get(0).getTargetPort(),
                 createProxyRequest.getWorkerCount());
-        new TcpProxy(staticTcpProxyConfig).start();
+        tcpProxy = new TcpProxy(staticTcpProxyConfig);
+        tcpProxy.start();
     }
 }
