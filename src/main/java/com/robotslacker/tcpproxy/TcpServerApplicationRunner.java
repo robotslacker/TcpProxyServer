@@ -1,7 +1,7 @@
 package com.robotslacker.tcpproxy;
 
 import com.robotslacker.tcpproxy.config.TcpProxyServerConfig;
-import com.robotslacker.tcpproxy.service.TcpProxyServerService;
+import com.robotslacker.tcpproxy.service.TcpProxyBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -22,6 +22,6 @@ public class TcpServerApplicationRunner implements ApplicationRunner {
         logger.info("系统启动中, ...");
         logger.info("程序编译时间： " + tcpProxyServerConfig.appBuildTime);
         logger.info("系统已经启动就绪，等待连接中...");
-        TcpProxyServerService.serviceStatus = "RUNNING";
+        TcpProxyBaseService.serviceStatus = "RUNNING";
     }
 }

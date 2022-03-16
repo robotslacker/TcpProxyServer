@@ -1,13 +1,12 @@
 package com.robotslacker.tcpproxy.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
-import com.robotslacker.tcpproxy.service.TcpProxyServerService;
+import com.robotslacker.tcpproxy.service.TcpProxyBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,11 +19,11 @@ public class ServiceStatusInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) {
-        if (!"RUNNING".equals(TcpProxyServerService.serviceStatus)) {
+        if (!"RUNNING".equals(TcpProxyBaseService.serviceStatus)) {
             try {
                 JSONObject ret = new JSONObject();
                 ret.put("errorCode", "PROXY-S00006");
-                switch (TcpProxyServerService.serviceStatus)
+                switch (TcpProxyBaseService.serviceStatus)
                 {
                     case "STARTING":
                         ret.put("errMsg", "服务正在初始化，请稍后再尝试.");
@@ -33,7 +32,7 @@ public class ServiceStatusInterceptor implements HandlerInterceptor {
                         ret.put("errMsg", "服务正在关闭中, 无法继续使用.");
                         break;
                     default:
-                        ret.put("errMsg", "系统不提供服务【" + TcpProxyServerService.serviceStatus + "】");
+                        ret.put("errMsg", "系统不提供服务【" + TcpProxyBaseService.serviceStatus + "】");
                         break;
                 }
                 response.setHeader("Access-Control-Allow-Origin", "*");

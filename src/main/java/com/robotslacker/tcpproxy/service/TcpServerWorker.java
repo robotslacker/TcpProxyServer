@@ -14,7 +14,9 @@ Copyright 2012 Artem Stasuk
    limitations under the License.
  */
 
-package com.robotslacker.tcpproxy;
+package com.robotslacker.tcpproxy.service;
+
+import com.robotslacker.tcpproxy.service.TcpServerHandler;
 
 import java.io.Closeable;
 import java.io.IOException;

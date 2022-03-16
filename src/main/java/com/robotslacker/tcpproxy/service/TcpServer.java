@@ -1,4 +1,8 @@
-package com.robotslacker.tcpproxy;
+package com.robotslacker.tcpproxy.service;
+
+import com.robotslacker.tcpproxy.service.TcpServerAcceptor;
+import com.robotslacker.tcpproxy.config.TcpServerConfig;
+import com.robotslacker.tcpproxy.service.TcpServerWorker;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;

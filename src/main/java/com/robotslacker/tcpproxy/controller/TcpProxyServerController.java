@@ -1,7 +1,7 @@
 package com.robotslacker.tcpproxy.controller;
 
-import com.robotslacker.tcpproxy.StaticTcpProxyConfig;
-import com.robotslacker.tcpproxy.TcpProxy;
+import com.robotslacker.tcpproxy.service.impl.TcpProxyServiceStaticIImpl;
+import com.robotslacker.tcpproxy.service.TcpProxy;
 import com.robotslacker.tcpproxy.TcpProxyServerApplication;
 import com.robotslacker.tcpproxy.model.CreateProxyRequest;
 import org.slf4j.Logger;
@@ -48,8 +48,8 @@ public class TcpProxyServerController {
     @PostMapping("/createProxy")
     @ResponseBody
     public void createProxy(@RequestBody CreateProxyRequest createProxyRequest) {
-        StaticTcpProxyConfig staticTcpProxyConfig =
-            new StaticTcpProxyConfig(createProxyRequest.getLocalPort(),
+        TcpProxyServiceStaticIImpl staticTcpProxyConfig =
+            new TcpProxyServiceStaticIImpl(createProxyRequest.getLocalPort(),
                 createProxyRequest.getProxyTargetEndPoint().get(0).getTargetAddress(),
                 createProxyRequest.getProxyTargetEndPoint().get(0).getTargetPort(),
                 createProxyRequest.getWorkerCount());

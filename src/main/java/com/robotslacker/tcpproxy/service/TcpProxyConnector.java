@@ -14,9 +14,9 @@ Copyright 2012 Artem Stasuk
    limitations under the License.
  */
 
-package com.robotslacker.tcpproxy;
+package com.robotslacker.tcpproxy.service;
 
-import com.robotslacker.tcpproxy.model.TcpProxyConfig;
+import com.robotslacker.tcpproxy.model.ProxyTargetEndPoint;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -37,9 +37,9 @@ class TcpProxyConnector implements TcpServerHandler {
 
     private Selector selector;
     private SocketChannel serverChannel;
-    private TcpProxyConfig config;
+    private ITcpProxyService config;
 
-    public TcpProxyConnector(SocketChannel clientChannel, TcpProxyConfig config) {
+    public TcpProxyConnector(SocketChannel clientChannel, ITcpProxyService config) {
         this.clientChannel = clientChannel;
         this.config = config;
     }
@@ -91,11 +91,13 @@ class TcpProxyConnector implements TcpServerHandler {
     public void register(Selector selector) {
         this.selector = selector;
 
+        ProxyTargetEndPoint proxyTargetEndPoint = config.getProxyTargetEndPointList().get(0);
+
         try {
             clientChannel.configureBlocking(false);
 
             final InetSocketAddress socketAddress = new InetSocketAddress(
-                    config.getRemoteHost(), config.getRemotePort());
+                    proxyTargetEndPoint.getTargetAddress(), proxyTargetEndPoint.getTargetPort());
             serverChannel = SocketChannel.open();
             serverChannel.connect(socketAddress);
             serverChannel.configureBlocking(false);
@@ -106,7 +108,7 @@ class TcpProxyConnector implements TcpServerHandler {
 
             if (LOGGER.isLoggable(Level.WARNING))
                 LOGGER.log(Level.WARNING, "Could not connect to "
-                        + config.getRemoteHost() + ":" + config.getRemotePort(), exception);
+                        + proxyTargetEndPoint.getTargetAddress() + ":" + proxyTargetEndPoint.getTargetPort(), exception);
         }
     }
 

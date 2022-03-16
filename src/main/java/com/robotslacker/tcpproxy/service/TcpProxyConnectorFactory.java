@@ -14,20 +14,21 @@ Copyright 2012 Artem Stasuk
    limitations under the License.
  */
 
-package com.robotslacker.tcpproxy;
+package com.robotslacker.tcpproxy.service;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.nio.channels.SocketChannel;
 
-public class TcpProxyRunner {
+class TcpProxyConnectorFactory implements TcpServerHandlerFactory {
 
-    private final static Logger LOGGER = Logger.getAnonymousLogger();
+    private final ITcpProxyService config;
 
-    public static void main(final String[] args) {
+    public TcpProxyConnectorFactory(ITcpProxyService config) {
+        this.config = config;
+    }
+
+    @Override
+    public TcpServerHandler create(final SocketChannel clientChannel) {
+        return new TcpProxyConnector(clientChannel, config);
     }
 
 }

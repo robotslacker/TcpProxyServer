@@ -1,4 +1,6 @@
-package com.robotslacker.tcpproxy;
+package com.robotslacker.tcpproxy.config;
+
+import com.robotslacker.tcpproxy.service.TcpServerHandlerFactory;
 
 /**
  * Configuration for TCP server

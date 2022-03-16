@@ -1,6 +1,7 @@
-package com.robotslacker.tcpproxy;
+package com.robotslacker.tcpproxy.service;
 
-import com.robotslacker.tcpproxy.model.TcpProxyConfig;
+import com.robotslacker.tcpproxy.config.TcpServerConfig;
+import com.robotslacker.tcpproxy.service.impl.TcpProxyServiceStaticIImpl;
 
 /**
  * TCP proxy.
@@ -16,14 +17,14 @@ import com.robotslacker.tcpproxy.model.TcpProxyConfig;
  *
  * @see TcpProxyConnectorFactory
  * @see TcpProxyConnector
- * @see StaticTcpProxyConfig
+ * @see TcpProxyServiceStaticIImpl
  * @see TcpServer
  */
 public class TcpProxy {
 
     private final TcpServer server;
 
-    public TcpProxy(final TcpProxyConfig config) {
+    public TcpProxy(final ITcpProxyService config) {
         TcpProxyConnectorFactory handlerFactory = new TcpProxyConnectorFactory(config);
 
         final TcpServerConfig serverConfig =
