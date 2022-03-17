@@ -1,8 +1,11 @@
 package com.robotslacker.tcpproxy.service;
 
+import com.robotslacker.tcpproxy.tcpserver.ITcpServerHandler;
+import com.robotslacker.tcpproxy.tcpserver.ITcpServerHandlerFactory;
+
 import java.nio.channels.SocketChannel;
 
-class TcpProxyConnectorFactory implements TcpServerHandlerFactory {
+class TcpProxyConnectorFactory implements ITcpServerHandlerFactory {
 
     private final ITcpProxyService config;
 

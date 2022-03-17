@@ -1,11 +1,11 @@
-package com.robotslacker.tcpproxy.service;
+package com.robotslacker.tcpproxy.tcpserver;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 
-class TcpProxyBuffer {
+public class TcpServerSocketBuffer {
 
     private final static int BUFFER_SIZE = 1000;
     private enum BufferState {READY_TO_WRITE, READY_TO_READ}

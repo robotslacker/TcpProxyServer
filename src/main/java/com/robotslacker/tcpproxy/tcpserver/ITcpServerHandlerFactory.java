@@ -1,4 +1,4 @@
-package com.robotslacker.tcpproxy.service;
+package com.robotslacker.tcpproxy.tcpserver;
 
 import java.nio.channels.SocketChannel;
 
@@ -7,7 +7,7 @@ import java.nio.channels.SocketChannel;
  * all incoming connection from clients. When handler
  * was created TCP server use it for process events from client channel.
  */
-public interface TcpServerHandlerFactory {
+public interface ITcpServerHandlerFactory {
 
     ITcpServerHandler create(SocketChannel clientChannel);
 

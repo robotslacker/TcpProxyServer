@@ -1,4 +1,4 @@
-package com.robotslacker.tcpproxy.service;
+package com.robotslacker.tcpproxy.tcpserver;
 
 import com.robotslacker.tcpproxy.config.TcpServerConfig;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @see TcpServerConfig
  * @see ITcpServerHandler
- * @see TcpServerHandlerFactory
+ * @see ITcpServerHandlerFactory
  */
 public class TcpServer {
 

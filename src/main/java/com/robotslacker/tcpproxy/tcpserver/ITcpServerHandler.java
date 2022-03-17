@@ -1,4 +1,4 @@
-package com.robotslacker.tcpproxy.service;
+package com.robotslacker.tcpproxy.tcpserver;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -6,7 +6,7 @@ import java.nio.channels.Selector;
 /**
  * Handler for all incoming client connection.
  *
- * @see TcpServerHandlerFactory
+ * @see ITcpServerHandlerFactory
  */
 public interface ITcpServerHandler {
 

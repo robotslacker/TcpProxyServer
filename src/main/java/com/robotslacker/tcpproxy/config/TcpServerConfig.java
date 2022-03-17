@@ -1,6 +1,6 @@
 package com.robotslacker.tcpproxy.config;
 
-import com.robotslacker.tcpproxy.service.TcpServerHandlerFactory;
+import com.robotslacker.tcpproxy.tcpserver.ITcpServerHandlerFactory;
 
 /**
  * Configuration for TCP server
@@ -9,9 +9,9 @@ public class TcpServerConfig {
 
     private final int port;
     private final int workerCount;
-    private final TcpServerHandlerFactory handlerFactory;
+    private final ITcpServerHandlerFactory handlerFactory;
 
-    public TcpServerConfig(int port, TcpServerHandlerFactory handlerFactory, int workerCount) {
+    public TcpServerConfig(int port, ITcpServerHandlerFactory handlerFactory, int workerCount) {
         if (workerCount < 1)
             throw new IllegalArgumentException("Count of workers should be at least 1!");
 
@@ -36,7 +36,7 @@ public class TcpServerConfig {
     /**
      * @return - handler factory which TCP server will use for process incoming connections
      */
-    public TcpServerHandlerFactory getHandlerFactory() {
+    public ITcpServerHandlerFactory getHandlerFactory() {
         return handlerFactory;
     }
 

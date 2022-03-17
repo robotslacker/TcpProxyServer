@@ -1,6 +1,8 @@
 package com.robotslacker.tcpproxy.service;
 
 import com.robotslacker.tcpproxy.model.ProxyTargetEndPoint;
+import com.robotslacker.tcpproxy.tcpserver.ITcpServerHandler;
+import com.robotslacker.tcpproxy.tcpserver.TcpServerSocketBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +18,8 @@ class TcpProxyConnector implements ITcpServerHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final TcpProxyBuffer clientBuffer = new TcpProxyBuffer();
-    private final TcpProxyBuffer serverBuffer = new TcpProxyBuffer();
+    private final TcpServerSocketBuffer clientBuffer = new TcpServerSocketBuffer();
+    private final TcpServerSocketBuffer serverBuffer = new TcpServerSocketBuffer();
     private final SocketChannel clientChannel;
 
     private Selector selector;

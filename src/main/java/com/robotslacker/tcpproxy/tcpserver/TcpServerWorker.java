@@ -1,4 +1,4 @@
-package com.robotslacker.tcpproxy.service;
+package com.robotslacker.tcpproxy.tcpserver;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -59,7 +59,6 @@ class TcpServerWorker extends Thread {
             }
             catch (IOException ioe)
             {
-                System.out.println("OK1111");
                 ioe.printStackTrace();
             }
         }
