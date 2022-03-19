@@ -1,6 +1,8 @@
 package com.robotslacker.tcpproxy.tcpserver;
 
 import com.robotslacker.tcpproxy.config.TcpServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,18 +11,18 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class TcpServerAcceptor implements ITcpServerHandler {
 
     private final static int ACCEPT_BUFFER_SIZE = 1000;
-    private final static Logger LOGGER = Logger.getAnonymousLogger();
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final TcpServerConfig config;
     private final Queue<ITcpServerHandler> handlers;
 
-    public TcpServerAcceptor(final TcpServerConfig config, final Queue<ITcpServerHandler> handlers) {
+    public TcpServerAcceptor(final TcpServerConfig config,
+                             final Queue<ITcpServerHandler> handlers) {
         this.config = config;
         this.handlers = handlers;
     }
@@ -33,8 +35,9 @@ class TcpServerAcceptor implements ITcpServerHandler {
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT, this);
         } catch (final IOException exception) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, "Can't init server connection!", exception);
+            logger.info("无法打开端口【{}】的服务监听.【{}】",
+                config.getPort(),
+                exception.getMessage());
         }
     }
 
@@ -49,8 +52,9 @@ class TcpServerAcceptor implements ITcpServerHandler {
 
                 handlers.add(config.getHandlerFactory().create(clientChannel));
             } catch (final IOException exception) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, "Can't accept client connection!", exception);
+                logger.info("无法注册端口【{}】的服务业务.【{}】",
+                    config.getPort(),
+                    exception.getMessage());
             }
         }
     }

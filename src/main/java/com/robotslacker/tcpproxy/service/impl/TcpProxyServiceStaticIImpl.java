@@ -31,6 +31,5 @@ public class TcpProxyServiceStaticIImpl implements ITcpProxyService {
         proxyTargetEndPoint.setTargetPort(remotePort);
         proxyTargetEndPoint.setTargetAddress(remoteHost);
         this.proxyTargetEndPointList.add(proxyTargetEndPoint);
-
     }
 }
