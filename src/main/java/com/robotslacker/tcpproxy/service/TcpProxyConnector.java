@@ -128,10 +128,10 @@ class TcpProxyConnector implements ITcpServerHandler {
             }
         } catch (final ClosedChannelException exception) {
             destroy();
-            logger.error("Channel was closed by client or server.", exception);
+            logger.info("来自于客户端【{}】的连接已经被主动中断.", clientAddress);
         } catch (final IOException exception) {
             destroy();
-            logger.info("来自于客户端【{}】的连接已经中断.", clientAddress);
+            logger.error("来自于客户端【{}】的连接已经被异常中断.", clientAddress);
         }
 
 
@@ -146,10 +146,10 @@ class TcpProxyConnector implements ITcpServerHandler {
             }
         } catch (final ClosedChannelException exception) {
             destroy();
-            logger.error("Channel was closed by client or server.", exception);
+            logger.info("来自于服务端【{}】的连接已经被主动中断.", serverAddress);
         } catch (final IOException exception) {
             destroy();
-            logger.info("来自于服务端【{}】的连接已经中断.", serverAddress);
+            logger.error("来自于服务端【{}】的连接已经异常中断.", serverAddress);
         }
 
     }

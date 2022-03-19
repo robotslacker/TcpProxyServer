@@ -7,8 +7,8 @@ Content-Type: application/json
   "localPort": 9000,
   "proxyTargetEndPoint": [
       {
-        "targetPort": 22,
-        "targetAddress": "192.168.2.4"
+        "targetPort": 80,
+        "targetAddress": "www.6park.com"
       }
     ],
   "workerCount": 3

@@ -1,6 +1,6 @@
 package com.robotslacker.tcpproxy.service;
 
-import com.robotslacker.tcpproxy.config.TcpServerConfig;
+import com.robotslacker.tcpproxy.tcpserver.TcpServerConfig;
 import com.robotslacker.tcpproxy.service.impl.TcpProxyServiceStaticIImpl;
 import com.robotslacker.tcpproxy.tcpserver.TcpServer;
 

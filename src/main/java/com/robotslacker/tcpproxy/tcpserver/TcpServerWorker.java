@@ -1,17 +1,19 @@
 package com.robotslacker.tcpproxy.tcpserver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Queue;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class TcpServerWorker extends Thread {
 
     private final static long SELECTOR_TIMEOUT = 100L;
-    private final static Logger LOGGER = Logger.getAnonymousLogger();
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Queue<ITcpServerHandler> handlers;
 
@@ -42,8 +44,7 @@ class TcpServerWorker extends Thread {
                 keys.clear();
             }
         } catch (final IOException exception) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, "Problem with selector, worker will be stopped!", exception);
+            logger.error("TCP服务Worker出现异常错误，Worker已经被停止!", exception);
         } finally {
             if (selector != null) {
                 closeSelector(selector);

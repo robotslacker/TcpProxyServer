@@ -9,8 +9,20 @@ public class TcpServerSocketBuffer {
 
     private final static int BUFFER_SIZE = 1000;
     private enum BufferState {READY_TO_WRITE, READY_TO_READ}
+    private ByteBuffer buffer;
 
-    private final ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
+    public TcpServerSocketBuffer()
+    {
+        this.buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
+    }
+
+    public TcpServerSocketBuffer(boolean directBuffer)
+    {
+        if (!directBuffer)
+        {
+            this.buffer = ByteBuffer.allocate(BUFFER_SIZE);
+        }
+    }
     private BufferState state = BufferState.READY_TO_WRITE;
 
     public boolean isReadyToRead() {

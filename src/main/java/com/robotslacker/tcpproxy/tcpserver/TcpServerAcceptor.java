@@ -1,6 +1,5 @@
 package com.robotslacker.tcpproxy.tcpserver;
 
-import com.robotslacker.tcpproxy.config.TcpServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
